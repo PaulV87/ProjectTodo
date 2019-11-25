@@ -5,7 +5,42 @@
     <link rel="stylesheet" href="styles.css" >
   </head>
   <body>
-    <h1>ToDo Project</h1>
+    <div class="content-container">
+      <section class="page-header">
+        <div class="header page-header-content">Project: ToDo</div>
+      </section>
+      <section class="navbar">
+        <div class="nav-header">
+          <span class="navbar-header-content">Projects</span>
+          <button type="button" class="btn" id="toggle-project-insert">+</button>
+        </div>
+        <div class="project-input-container">          
+          <input type="text" class"project-input" id="project-input" placeholder="Insert Project Name" >
+          <button type="button" class="btn" id="insert-project-button">+</button>
+        </div>
+        <ul id="project-list">
+        </ul>
+      </section>
+      <section class="main-content">
+        <div class="content-header">
+          <span class="content-header-content" id="content-header-title">Project</span>
+          <button type="button" class="btn" id="table-insert-toggle">+</button>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ToDo/Bug</th>
+              <th>Description</th>
+              <th>Date opened</th>
+              <th>Closed</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
     <script src="javascript.js"></script>
   </body>
 </html>

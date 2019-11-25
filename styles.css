@@ -1,3 +1,238 @@
+/* Global reset */
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* CSS Starting point */
+
+@media only screen and (max-width: 600px) {
+    .content-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 75px 1fr 1fr; 
+        background-color: brown;
+    }
+    
+    .page-header{
+        background-color: aqua;
+        width: 1fr;
+        grid-row: 1;
+       
+    }
+    
+    .navbar {
+        grid-column: 1 / span 2;
+        
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background-color: blueviolet;
+             
+    }
+
+    .nav-header{
+        grid-column: 1 / span 2;
+        height: 50px;
+        background-color: yellow;
+        justify-content: center;
+    }
+
+    /* Nav project input container */
+    .project-input-container{
+        display: none;
+        grid-template-columns: 250px 1fr;
+       
+        
+        height: 30px;
+    }
+
+    .show {
+        display: grid;
+    }
+        
+    
+    
+    .main-content {
+        background-color: yellow;
+        grid-row: 3;
+        grid-column: 1 / span 2;
+    }
+
+}
+
 body{
     background-color: blue;
+}
+
+.content-container{
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    background-color: brown;
+}
+
+.page-header{
+    background-color: aqua;
+    grid-column: 1 / span 2;
+    height: 75px;
+}
+
+.navbar {
+    background-color: blueviolet;
+    min-height: 800px;
+}
+
+.main-content {
+    background-color: yellow;
+}
+
+/* Header css */
+.header{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding-top:10px;
+    padding-bottom: 30px;
+}
+
+.page-header{
+    font-size: 60px;
+}
+
+.nav-header{
+    font-size: 40px;
+    display: grid;
+    justify-content: center;
+    grid-template-columns:140px 40px;
+}
+
+.content-header{
+    font-size: 50px;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 150px 50px;
+    padding: 10px 0 20px 0;
+}
+
+/* Buttons */
+.btn{    
+    border-radius: 5px;
+    background-color: #1a5cd6 ;
+    border: 2px solid #1a5cd6; 
+    
+}
+
+.delbtn {
+  
+}
+
+.btn:hover{
+    background-color: royalblue;
+}
+/* Nav project input container */
+.project-input-container{
+    display: none;
+    grid-template-columns: 250px 1fr;
+    grid-gap: 5px;
+    padding: 0 10px;    
+    height: 30px;
+}
+
+.show {
+    display: grid;
+}
+
+
+/* table */
+.data-table {
+	font-family: "Trebuchet MS", Ariel, Helvetica, sans-serif;
+	border-collapse: collapse;
+	width: 95%;
+	margin: 0 10px 0 20px;
+}
+
+.data-table td, .data-table th {
+	border: 1px solid black;
+	
+}
+
+.data-table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+.data-table tr:hover {
+	background-color: #ddd;
+}
+
+.data-table th {
+	padding-top: 15px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #ccc;
+    color: black;
+    text-align: center;
+}
+
+/* table end */
+
+#project-list > li {
+    display: grid;
+    grid-template-columns: 200px 30px;
+    font-size: 30px;
+    grid-gap: 15px;
+    padding: 5px 20px 5px 20px;
+}
+
+
+
+.projects {
+    background-color: pink;
+}
+
+.projects:hover{
+    background-color: purple;
 }
