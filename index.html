@@ -6,6 +6,7 @@
   </head>
   <body>
     <div class="content-container">
+
       <section class="page-header">
         <div class="header page-header-content">Project: ToDo</div>
       </section>
@@ -21,26 +22,65 @@
         <ul id="project-list">
         </ul>
       </section>
+
       <section class="main-content">
         <div class="content-header">
           <span class="content-header-content" id="content-header-title">Project</span>
           <button type="button" class="btn" id="table-insert-toggle">+</button>
         </div>
+        <div class="form-content-container">
+          <form class="input-form">
+            <div class="form-header">
+              <div class="header-text-form">Enter data in the database</div>              
+            </div >
+            <div class="form-input">
+              <div>
+                <span class="input-span">ID</span>          
+                <input type="text" class="input-box small-input-box" id="id-input-box" disabled="true"> 
+              </div>
+              
+              <div>
+                <span class="input-span">ToDo/Bug</span>          
+                <input type="text" class="input-box medium-input-box" id="ToDo-input-box"> 
+              </div>
+              <div class="message-input-container">
+                <span class="input-span">Message</span>          
+                <textarea type="text" class="input-box large-input-box" id="message-input-box"></textarea>                          
+              </div>
+              
+              <div>
+                <span class="input-span">Date opened</span>
+                <input type="text" class="input-box small-input-box" id="open-input-box" disabled="true" >
+              </div>
+              <div>
+                <span class="input-span">Priority</span>
+                <input type="checkbox" value="" class="priority-check" id="priority-check">
+              </div>             
+            </div>
+            <button type="button" class="form-button btn" id="insert-project-details-btn">Insert data</button>
+            </form>
+          </div>
+
         <table class="data-table">
           <thead>
             <tr>
               <th>ID</th>
               <th>ToDo/Bug</th>
               <th>Description</th>
-              <th>Date opened</th>
-              <th>Closed</th>
+              <th>P</th>
+              <th>Open</th>
+              <th>Close</th>
+              <th>Edit</th>
               <th>Delete</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody id="insert-table-data">
+          </tbody>
         </table>
+
       </section>
     </div>
+
     <script src="javascript.js"></script>
   </body>
 </html>

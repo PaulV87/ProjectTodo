@@ -1,15 +1,42 @@
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
-console.log("Working")
+window.IDBTransaction = window.IDBTransaction || 
+window.webkitIDBTransaction || window.msIDBTransaction;
 
-const indexDbfunction = () => {
-    addDb = () => "add function";
-    deleteDb = () => "delete";
-    editDb = () =>"edit";
-    openDb = () => "open";
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || 
+window.msIDBKeyRange
 
-    return { addDb, deleteDb, editDb, openDb}
+if (!window.indexedDB) {
+    window.alert("Browser does not support IndexedDb"); 
 }
 
+const projectsName = "Project List";
+const projectsDetails = "Project Details"
+
+let db;
+
+    let request = window.indexedDB.open("ToDoList", 1)
+    console.log(request);
+    request.onerror = function(event) {
+        reject("failed to open db");
+    };
+
+    request.onsuccess = function(event) {
+        db = request.result;
+        console.log("onsuccess " + db)
+        return db;
+    };
+
+    request.onupgradeneeded = function(event) {
+        let db = event.target.result;
+        
+        let objectStore = db.createObjectStore(projectsName, { keyPath: "name" });
+        let objectStore2 = db.createObjectStore(projectsDetails, { keyPath: "id", autoIncrement: true });
+        objectStore2.createIndex("ToDo" , "ToDo", { unique: false });
+        objectStore2.createIndex("Created" , "Created", { unique: false });
+        console.log("upgrage " + db);
+        return db;
+    }    
 
 const insertToggleBtn = document.querySelector("#toggle-project-insert");
 insertToggleBtn.addEventListener("click", function(){
@@ -20,63 +47,57 @@ const insertProjectBtn = document.querySelector("#insert-project-button");
 insertProjectBtn.addEventListener("click", function(){
     const inputBox = document.querySelector("#project-input")
     const projectName = inputBox.value;
-    data = { name: projectName, data: ""}
-    addToDb(projectsName, data);
-    inputBox.value = "";
-})
 
-const testBtn = document.querySelector("#table-insert-toggle");
-testBtn.addEventListener("click", function(){
+    if (projectName != ""){
+        data = { name: projectName, data: ""}
+        addToDb(projectsName, data);
+         inputBox.value = "";
+    }    
+});
+
+const toggleProjectDetailsBtn = document.querySelector("#table-insert-toggle");
+toggleProjectDetailsBtn.addEventListener("click", function(){
     console.log("click");
-    const tableHeader = document.querySelector("#content-header-title");
-    tableTitle = tableHeader.innerHTML;
-    let data = [ { name: "yes", class: "Wiskunde" } ]
-    console.log(data);
-    console.log(tableTitle);
-    editDb(tableTitle, data);
+    document.querySelector(".form-content-container").classList.toggle("show");
+});
+
+// 
+const insertProjectDetailsBtn = document.querySelector("#insert-project-details-btn")
+insertProjectDetailsBtn.addEventListener("click", function(){
+    const nameData = document.querySelector('#content-header-title').innerHTML;
+
+    if (nameData != "Project"){             
+        const TodoData = document.querySelector('#ToDo-input-box').value;
+        const messageData = document.querySelector('#message-input-box').value;
+        const dateOpenedData = getDate();
+        const dateClosedData = undefined;
+        const priorityData = document.querySelector('#priority-check').checked;
+
+        const inputData = [{ name: nameData, ToDo: TodoData, message : messageData, 
+                            Created: dateOpenedData, closed: dateClosedData, priority: priorityData }];
+
+        addToDb(projectsDetails, inputData);
+    }
     
 })
+
 // IndexedDb functions
-// open
-window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-
-window.IDBTransaction = window.IDBTransaction || 
-window.webkitIDBTransaction || window.msIDBTransaction;
-
-window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || 
-window.msIDBKeyRange
- 
-if (!window.indexedDB) {
-	window.alert("Browser does not support IndexedDb");
-}
-
-const projectsName = "Project's Name";
-let db;
-
-let request = window.indexedDB.open("projectsNameDb", 1)
-
-request.onerror = function(event) {
-	console.log("error: ");
-};
-
-request.onsuccess = function(event) {
-	db = request.result;
-	console.log("success: " + db);
-};
-
-request.onupgradeneeded = function(event) {
-	let db = event.target.result;
-    let objectStore = db.createObjectStore(projectsName, { keyPath: "name" });
-}
 // IndexedDb crud functions
 function addToDb(objStore, data){    
-    let request = db.transaction([projectsName], "readwrite")
+    
+    let request = db.transaction([objStore], "readwrite")
         .objectStore(objStore)
         .add(data);
 
     request.onsuccess = function(event){
         console.log("successfully written to db");
-        readProjectsDb();
+        switch (objStore){
+            case projectsName:
+                readProjectsDb();
+            case projectsDetails:
+                readProjectDetailsDb();
+        }
+       
     }
     request.onerror = function(event){
         alert("Failed to write " + data + " to db");
@@ -107,11 +128,12 @@ function editDb(key, dataD){
 // Read Db to nav Window
 function readProjectsDb(){
     clearNavBar();
-    console.log("Read called");  
-    let transaction = db.transaction(projectsName).objectStore(projectsName);
+    console.log("Read project list called");  
+    let transaction = db.transaction("Project List").objectStore("Project List");
     transaction.openCursor().onsuccess = function(event){
         let cursor = event.target.result;
         if (cursor){
+            console.log(cursor.key);
             const projectList = document.querySelector("#project-list");
             const newLi = document.createElement("li");
             const newSpan = document.createElement("span");
@@ -134,6 +156,27 @@ function readProjectsDb(){
     };
 };
 
+function readProjectDetailsDb(){
+    console.log("Read table data")
+    let transaction = db.transaction("Project Details").objectStore("Project Details");
+    transaction.openCursor().onsuccess = function(event){
+        let cursor = event.target.result;
+        if (cursor){
+            console.log(cursor.key);
+            console.log(cursor.value[0].name);
+            console.log(cursor.value[0].ToDo);
+            console.log(cursor.value[0].message);
+            console.log(cursor.value[0].Created);
+            console.log(cursor.value[0].closed);
+            cursor.continue();
+
+        }
+    }
+    transaction.openCursor().onerror = function(event){
+        console.log("failure")
+    }
+}
+
 // functions to clear the screen
 function clearNavBar(){
     let liClear = document.querySelector("#project-list");
@@ -142,85 +185,45 @@ function clearNavBar(){
     }
 }
 
+// TODO clear table before writing to it
+function clearTable(){
+
+}
+
 function openNewObjectStore(value){
     const tableName = value.innerHTML;
     const tableHeader = document.querySelector("#content-header-title");
     tableHeader.textContent= tableName;
-    console.log("this is my version " + db.version)
+
    // updateDb(tableName);
 }
     
-/* function updateDb(tableName){
-    const updateIndexedDb = new Promise(function(resolve, reject){
-    let dbVersionUpgrade = parseInt(db.version) + 1;
-    console.log("this is my new version " + dbVersionUpgrade)
-    if (!db.objectStoreNames.contains(tableName)){
-        db.close();
-        let request = window.indexedDB.open("projectsNameDb", dbVersionUpgrade);
-        console.log(tableName);
-        request.onsuccess = function(event){
-            let db = event.target.result;
-            console.log(db);
-        }     
-        request.onerror = function(event){
-            console.log("failed to open db")
-        }
-
-        request.onupgradeneeded = function(event){
-            console.log("Find me")
-            let db = event.target.result;
-            let newObjectStore = db.createObjectStore(tableName, { keyPath: "id", autoincrement: "true" });
-        }
-        
-    }
-    })
-} */
 
 function clearTable(){
     // TODO
 }
 
-
-window.onload= function(){
-    // Using a promise to open the DB
+window.onload = function(){
     const loadDoc = new Promise(function(resolve, reject){
-        // IndexedDb functions
-        // open
-        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-
-        window.IDBTransaction = window.IDBTransaction || 
-        window.webkitIDBTransaction || window.msIDBTransaction;
-
-        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || 
-        window.msIDBKeyRange
-        
-        if (!window.indexedDB) {
-            window.alert("Browser does not support IndexedDb");
-        }
-
-        const projectsName = "Project's Name";
-        let db;
-
-        let request = window.indexedDB.open("projectsNameDb")
-        console.log(request);
-        request.onerror = function(event) {
-            reject("failed to open db");
-        };
-
-        request.onsuccess = function(event) {
-            db = request.result;
+        let request = window.indexedDB.open("ToDoList");
+        request.onsuccess = function(event){
+            db = event.target.result;
             resolve(db);
-        };
-
-        request.onupgradeneeded = function(event) {
-            let db = event.target.result;
-            let objectStore = db.createObjectStore(projectsName, { keyPath: "name" });
-        }    
+        }
     });
+    loadDoc.then((db) => {
+    readProjectsDb();
+    })
+};
 
 
-    // Use promise to load stuff into navbar window on load
-    loadDoc.then((db) =>{
-        readProjectsDb();
-    }) 
+// returns date in the format 'dd/mm/yyyy'
+function getDate(){
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const yyyy = today.getFullYear();
+
+    const date = dd + "/" + mm + "/" + yyyy;
+    return date;
 }

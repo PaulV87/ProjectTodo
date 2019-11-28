@@ -55,7 +55,7 @@ table {
     .content-container{
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 75px 1fr 1fr; 
+        grid-template-rows: 75px 200px 1fr; 
         background-color: brown;
     }
     
@@ -68,7 +68,7 @@ table {
     
     .navbar {
         grid-column: 1 / span 2;
-        
+        grid-row: 2;
         display: grid;
         grid-template-columns: 1fr 1fr;
         background-color: blueviolet;
@@ -85,9 +85,7 @@ table {
     /* Nav project input container */
     .project-input-container{
         display: none;
-        grid-template-columns: 250px 1fr;
-       
-        
+        grid-template-columns: 250px 1fr;       
         height: 30px;
     }
 
@@ -128,6 +126,7 @@ body{
 
 .main-content {
     background-color: yellow;
+    padding: 0 10px;
 }
 
 /* Header css */
@@ -154,16 +153,17 @@ body{
     font-size: 50px;
     display: grid;
     justify-content: center;
-    grid-template-columns: 150px 50px;
+    grid-template-columns: 300px 50px;
     padding: 10px 0 20px 0;
 }
 
 /* Buttons */
 .btn{    
+    color: white;
+    background-color: #0077C5;
     border-radius: 5px;
-    background-color: #1a5cd6 ;
-    border: 2px solid #1a5cd6; 
-    
+    border: #0077C5;
+    font-size: 15px;
 }
 
 .delbtn {
@@ -182,17 +182,16 @@ body{
     height: 30px;
 }
 
-.show {
-    display: grid;
-}
+
 
 
 /* table */
 .data-table {
+    display: relative;
 	font-family: "Trebuchet MS", Ariel, Helvetica, sans-serif;
 	border-collapse: collapse;
-	width: 95%;
-	margin: 0 10px 0 20px;
+    padding: 0 10px;    
+    width: 100%;
 }
 
 .data-table td, .data-table th {
@@ -210,11 +209,11 @@ body{
 
 .data-table th {
 	padding-top: 15px;
-	padding-bottom: 12px;
-	text-align: left;
+	padding-bottom: 12px;    
 	background-color: #ccc;
     color: black;
     text-align: center;
+   
 }
 
 /* table end */
@@ -235,4 +234,83 @@ body{
 
 .projects:hover{
     background-color: purple;
+}
+
+
+  /* Content CSS */
+.form-content-container{    
+    display: none;
+    background-color: green;
+   
+}
+
+
+.input-form {
+    background-color:#fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid black 1px;
+    flex-direction: column;    
+    font-family: AvenirNext,Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    z-index: 1;
+    padding: 0 10px;
+    
+}
+
+.header-text-form{   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: AvenirNext,Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    color: #4C4C4C;
+    line-height: 1.1;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.form-input {
+    display: grid;
+    grid-template-columns: 300px 300px 300px;
+    flex-direction: column;
+    grid-gap: 10px;
+}
+
+.input-span {
+    padding-top: 40px;
+    padding-bottom: 5px;
+    font-size: 15px;
+    color: #4C4C4C;
+}
+.input-box {
+    width: 280px;
+    height:30px;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+
+.form-button {
+    align-content: center;
+    margin: 5px auto;
+    height: 50px;
+    width: 300px;
+}
+
+.large-input-box {
+    height: 100px;
+    wrap: hard;
+    resize: none;
+}
+
+.message-input-container{
+    grid-column: 3;
+    grid-row: 1 /span 2;
+}
+
+
+/* CSS to toggle buttons */
+.show {
+    display: grid;
 }
