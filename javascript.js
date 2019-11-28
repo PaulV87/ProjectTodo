@@ -77,22 +77,26 @@ insertProjectDetailsBtn.addEventListener('click', function(){
         const TodoData = document.querySelector('#ToDo-input-box').value;
         const messageData = document.querySelector('#message-input-box').value;
         let dateOpenedData = getDate();
-        const dateClosedData = undefined;
+       
         const priorityData = document.querySelector('#priority-check').checked;
         if (idBox === ""){
-            console.log("Writing to Db")
+            let dateClosedData = undefined;
+            console.log(priorityData)
             const inputData = { name: nameData, ToDo: TodoData, message : messageData, 
-                Created: dateOpenedData, closed: dateClosedData, priority: priorityData };
+                                Created: dateOpenedData, closed: dateClosedData,
+                                priority: priorityData };
 
             addToDb(projectsDetails, inputData);            
         } else {
             console.log("ammending db")
             const key = parseInt(idBox);
             dateOpenedData += "*"
+            
             const inputData = {name: nameData, ToDo: TodoData, message : messageData, 
-                Created: dateOpenedData, closed: dateClosedData, priority: priorityData, id: key};
+                Created: dateOpenedData,  priority: priorityData, id: key};
             updateDatabase(projectsDetails, inputData , key)
         }
+        clearTableFields();
         
     }
     
@@ -136,10 +140,7 @@ function deleteFromDb(objStore, id){
                 readProjectDetailsDb();
         }
     }
-}
-
-
-    
+}    
 
 // Read Db to nav Window
 
@@ -216,9 +217,10 @@ function readProjectDetailsDb(){
                 cell2.textContent = cursor.value.ToDo;
                 cell3.textContent = cursor.value.message;
 
-                // TODO: Need to update DB
+                // Check box
                 const priorityCheckBox = document.createElement('input');
                 priorityCheckBox.type = 'checkbox'
+               
                 if (cursor.value.priority){
                     priorityCheckBox.checked = true;
                     row.classList = 'priority';
@@ -227,15 +229,26 @@ function readProjectDetailsDb(){
                     if (this.checked) {
                         row.classList = 'priority';           
                     } else {
-                        priorityCheckBox.checked = false;
                         row.classList.remove('priority');
                     };
-                });
-             
+                    const nameData = document.querySelector('#content-header-title').innerHTML;
+                    isChecked = this.checked;                
+            
+                    const getData = getRowValues(this);
+                 
+                    const dateClosedData = undefined;
+                    const key = parseInt(getData.id);
+                    const data = {name: nameData, ToDo: getData.ToDo, message : getData.message, 
+                        Created: getData.date, closed: dateClosedData, priority: isChecked, id: key};
+                    
+                    updateDatabase(projectsDetails, data)
+                    
+                });                
+                
                 cell4.appendChild(priorityCheckBox);
 
-
                 cell5.textContent = cursor.value.Created;                
+                
                 const closedValue =  cursor.value.closed;                
                 if (closedValue === undefined){ 
 
@@ -243,13 +256,21 @@ function readProjectDetailsDb(){
                     closeBtn.textContent = 'Close';
                     closeBtn.classList = "btn table-btn"                
                     closeBtn.addEventListener('click', function(){
-                        const parent = this.parentElement;
-                        parent.firstChild.remove;
+                        console.log("click");
+                      //  const parent = this.parentElement;
+                      //  parent.firstChild.remove;
                         const date = getDate();
-                        parent.textContent = date;                   
+                      //  parent.textContent = date;    
+                        const getData = getRowValues(this);
+                        const key = parseInt(getData.id);
+                        const nameData = document.querySelector('#content-header-title').innerHTML;
+                        const data = {name: nameData, ToDo: getData.ToDo, message : getData.message, 
+                            Created: getData.date, closed: date, priority: getData.priority, id: key};
+                        
+                        updateDatabase(projectsDetails, data)                        
                     });
 
-                cell6.appendChild(closeBtn);
+                    cell6.appendChild(closeBtn);
 
                 } else {
                     cell6.textContent = cursor.value.closed;
@@ -267,10 +288,10 @@ function readProjectDetailsDb(){
                 cell7.appendChild(editBtn);
 
 
-                // TODO: delete button
+                // Delete button
 
                 const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = "delete";
+                deleteBtn.textContent = "-";
                 deleteBtn.classList = "btn table-btn";
                 deleteBtn.addEventListener("click", function(){                   
                     const row = this.parentNode.parentNode;
@@ -281,36 +302,43 @@ function readProjectDetailsDb(){
                 cell8.appendChild(deleteBtn);
                 counter++;                
             }
-
             cursor.continue();
         };
     };
 };
 
+function getRowValues(value){
+    console.log(value)
+    let k = value.parentNode;
+    console.log(k)
+    const row = value.parentNode.parentNode;
+    console.log(row);
+    const id = row.cells[0].textContent;
+    const ToDo = row.cells[1].textContent;
+    const message = row.cells[2].innerHTML;
+    const priority = row.cells[3].firstChild.checked;
+    const date = row.cells[4].innerHTML;  
+    const closed = row.cells[5].innerHTML;
+    
+    return {id: id, ToDo: ToDo, message: message, priority: priority, date: date}
+}
+
 // update Db
 function updateDatabaseValues(value){
     toggleInputFields()
-    const row = value.parentNode.parentNode;
-    const id = row.cells[0].textContent;
-    const ToDo = row.cells[1].textContent;
-    console.log("TODO :" +ToDo)
-    const message = row.cells[2].innerHTML;
-    const priority = row.cells[3].firstChild.checked;
-    const date = row.cells[4].innerHTML;
-    console.log(id + ToDo + message);
-    console.log(row);
-    
+    const rowValues = getRowValues(value);
+    console.log(rowValues.id);
     const idBox = document.querySelector('#id-input-box');
-    idBox.value = id;
+    idBox.value = rowValues.id;
     const TodoData = document.querySelector('#ToDo-input-box');
-    TodoData.value = ToDo;
+    TodoData.value = rowValues.ToDo;
     const messageData = document.querySelector('#message-input-box')
-    messageData.textContent = message;
+    messageData.textContent = rowValues.message;
     const dateOpenedData = document.querySelector("#open-input-box")
-    dateOpenedData.value = date;
+    dateOpenedData.value = rowValues.date;
 
     const priorityData = document.querySelector('#priority-check')
-    priorityData.checked = priority;
+    priorityData.checked = rowValues.priority;    
 }
 
 function updateDatabase(objStore, data){
@@ -320,13 +348,12 @@ function updateDatabase(objStore, data){
 
     request.onsuccess = function(event){
         console.log('successfully written to db');
-        switch (objStore){
+          switch (objStore){
             case projectsName:
                 readProjectsDb();
             case projectsDetails:
                 readProjectDetailsDb();
-        }
-    
+        }    
     }
     request.onerror = function(event){
         alert('Failed to write ' + data + ' to db');
@@ -378,4 +405,18 @@ function getDate(){
 
     const date = dd + '/' + mm + '/' + yyyy;
     return date;
+}
+
+// clear fields in the table input form
+function clearTableFields(){
+    const idBox = document.querySelector('#id-input-box');
+    idBox.value = "";
+    const TodoData = document.querySelector('#ToDo-input-box');
+    TodoData.value = "";
+    const messageData = document.querySelector('#message-input-box')
+    messageData.textContent = "";
+    const dateOpenedData = document.querySelector("#open-input-box")
+    dateOpenedData.value = "";
+    const priorityData = document.querySelector('#priority-check')
+    priorityData.checked = false;
 }
