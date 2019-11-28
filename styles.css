@@ -314,3 +314,7 @@ body{
 .show {
     display: grid;
 }
+
+.priority {
+    background-color: red!important;
+}
