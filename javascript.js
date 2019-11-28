@@ -19,24 +19,21 @@ let db;
 let request = window.indexedDB.open('ToDoList', 1)
 console.log(request);
 request.onerror = function(event) {
-    reject('failed to open db');
+    alert("indexed Db failed to open");
 };
 
 request.onsuccess = function(event) {
-    db = request.result;
-    console.log('onsuccess ' + db)
-    return db;
+    db = request.result;        
 };
 
 request.onupgradeneeded = function(event) {
     let db = event.target.result;
-    
+
     let objectStore = db.createObjectStore(projectsName, { keyPath: 'name' });
     let objectStore2 = db.createObjectStore(projectsDetails, { keyPath: 'id', autoIncrement: true });
     objectStore2.createIndex('ToDo' , 'ToDo', { unique: false });
     objectStore2.createIndex('Created' , 'Created', { unique: false });
-    console.log('upgrage ' + db);
-    return db;
+    
 }    
 
 // List of button event handlers
@@ -79,7 +76,7 @@ insertProjectDetailsBtn.addEventListener('click', function(){
         const idBox = document.querySelector('#id-input-box').value;      
         const TodoData = document.querySelector('#ToDo-input-box').value;
         const messageData = document.querySelector('#message-input-box').value;
-        const dateOpenedData = getDate();
+        let dateOpenedData = getDate();
         const dateClosedData = undefined;
         const priorityData = document.querySelector('#priority-check').checked;
         if (idBox === ""){
@@ -91,6 +88,7 @@ insertProjectDetailsBtn.addEventListener('click', function(){
         } else {
             console.log("ammending db")
             const key = parseInt(idBox);
+            dateOpenedData += "*"
             const inputData = {name: nameData, ToDo: TodoData, message : messageData, 
                 Created: dateOpenedData, closed: dateClosedData, priority: priorityData, id: key};
             updateDatabase(projectsDetails, inputData , key)
@@ -123,19 +121,25 @@ function addToDb(objStore, data){
     }
 }
 
+// Delete from the navbar DB
 
-function deleteFromDb(value){
-    const parent = value.parentElement;
-    const id = parent.firstChild.innerHTML;
-    const request = db.transaction([projectsName], 'readwrite')
-    .objectStore(projectsName)
+function deleteFromDb(objStore, id){    
+    const request = db.transaction([objStore], 'readwrite')
+    .objectStore(objStore)
     .delete(id);
 
-    request.onsuccess = function(event){
-        console.log('successfully deleted from Db')
-        readProjectsDb();
+    request.onsuccess = function(event){       
+        switch(objStore){
+            case projectsName:
+                readProjectsDb();
+            case projectsDetails:
+                readProjectDetailsDb();
+        }
     }
 }
+
+
+    
 
 // Read Db to nav Window
 
@@ -154,7 +158,9 @@ function readProjectsDb(){
             newButton.textContent = '-';
             newButton.className = 'delbtn btn';
             newButton.addEventListener('click', function(){
-                deleteFromDb(this);
+                const parent = this.parentElement;
+                const id = parent.firstChild.innerHTML;
+                deleteFromDb(projectsName, id);
             }, false);
 
             newSpan.textContent = cursor.key;
@@ -250,8 +256,7 @@ function readProjectDetailsDb(){
                 }
 
 
-                // TODO: edit button
-
+                // Edit button
                 const editBtn = document.createElement('button');
                 editBtn.textContent = "edit"
                 editBtn.classList = "btn table-btn"
@@ -267,8 +272,11 @@ function readProjectDetailsDb(){
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = "delete";
                 deleteBtn.classList = "btn table-btn";
-                deleteBtn.addEventListener("click", function(){
-                    console.log("Delete clicked");
+                deleteBtn.addEventListener("click", function(){                   
+                    const row = this.parentNode.parentNode;
+                    const id = parseInt(row.cells[0].textContent);
+                   
+                    deleteFromDb(projectsDetails, id);
                 })
                 cell8.appendChild(deleteBtn);
                 counter++;                
@@ -305,9 +313,7 @@ function updateDatabaseValues(value){
     priorityData.checked = priority;
 }
 
-function updateDatabase(objStore, data, key){
-    console.log(data[0]);
-   const keyD = { id: key}
+function updateDatabase(objStore, data){
     let request = db.transaction([objStore], 'readwrite')
         .objectStore(objStore)
         .put(data);
