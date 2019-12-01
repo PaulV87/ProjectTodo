@@ -18,11 +18,11 @@ let db;
 
 let request = window.indexedDB.open('ToDoList', 1)
 console.log(request);
-request.onerror = function(event) {
-    alert("indexed Db failed to open");
+request.onerror = function(_event) {
+    alert('indexed Db failed to open');
 };
 
-request.onsuccess = function(event) {
+request.onsuccess = function(_event) {
     db = request.result;        
 };
 
@@ -52,9 +52,9 @@ insertProjectBtn.addEventListener('click', function(){
     const projectName = inputBox.value;
 
     if (projectName != ''){
-        data = { name: projectName, data: ''}
+        data = { name: projectName }
         addToDb(projectsName, data);
-         inputBox.value = '';
+        inputBox.value = '';
     }    
 });
 
@@ -79,7 +79,7 @@ insertProjectDetailsBtn.addEventListener('click', function(){
         let dateOpenedData = getDate();
        
         const priorityData = document.querySelector('#priority-check').checked;
-        if (idBox === ""){
+        if (idBox === ''){
             let dateClosedData = undefined;
             console.log(priorityData)
             const inputData = { name: nameData, ToDo: TodoData, message : messageData, 
@@ -88,9 +88,9 @@ insertProjectDetailsBtn.addEventListener('click', function(){
 
             addToDb(projectsDetails, inputData);            
         } else {
-            console.log("ammending db")
+            console.log('ammending db')
             const key = parseInt(idBox);
-            dateOpenedData += "*"
+            dateOpenedData += '*'
             
             const inputData = {name: nameData, ToDo: TodoData, message : messageData, 
                 Created: dateOpenedData,  priority: priorityData, id: key};
@@ -110,7 +110,7 @@ function addToDb(objStore, data){
         .objectStore(objStore)
         .add(data);
 
-    request.onsuccess = function(event){
+    request.onsuccess = function(_event){
         console.log('successfully written to db');
         switch (objStore){
             case projectsName:
@@ -120,7 +120,7 @@ function addToDb(objStore, data){
         }
        
     }
-    request.onerror = function(event){
+    request.onerror = function(_event){
         alert('Failed to write ' + data + ' to db');
     }
 }
@@ -132,7 +132,7 @@ function deleteFromDb(objStore, id){
     .objectStore(objStore)
     .delete(id);
 
-    request.onsuccess = function(event){       
+    request.onsuccess = function(_event){       
         switch(objStore){
             case projectsName:
                 readProjectsDb();
@@ -174,9 +174,9 @@ function readProjectsDb(){
             newLi.appendChild(newButton);           
             projectList.appendChild(newLi);          
             cursor.continue();
-        };
-    };
-};
+        }
+    }
+}
 
 
 // Opens Title and Db to table
@@ -254,9 +254,9 @@ function readProjectDetailsDb(){
 
                     const closeBtn = document.createElement('button');
                     closeBtn.textContent = 'Close';
-                    closeBtn.classList = "btn table-btn"                
+                    closeBtn.classList = 'btn table-btn'                
                     closeBtn.addEventListener('click', function(){
-                        console.log("click");
+                        console.log('click');
                       //  const parent = this.parentElement;
                       //  parent.firstChild.remove;
                         const date = getDate();
@@ -279,10 +279,10 @@ function readProjectDetailsDb(){
 
                 // Edit button
                 const editBtn = document.createElement('button');
-                editBtn.textContent = "edit"
-                editBtn.classList = "btn table-btn"
-                editBtn.addEventListener("click", function(){
-                    console.log("edit Clicked");
+                editBtn.textContent = 'edit'
+                editBtn.classList = 'btn table-btn'
+                editBtn.addEventListener('click', function(){
+                    console.log('edit Clicked');
                     updateDatabaseValues(this);
                 })
                 cell7.appendChild(editBtn);
@@ -291,9 +291,9 @@ function readProjectDetailsDb(){
                 // Delete button
 
                 const deleteBtn = document.createElement('button');
-                deleteBtn.textContent = "-";
-                deleteBtn.classList = "btn table-btn";
-                deleteBtn.addEventListener("click", function(){                   
+                deleteBtn.textContent = '-';
+                deleteBtn.classList = 'btn table-btn';
+                deleteBtn.addEventListener('click', function(){                   
                     const row = this.parentNode.parentNode;
                     const id = parseInt(row.cells[0].textContent);
                    
@@ -315,7 +315,7 @@ function getRowValues(value){
     console.log(row);
     const id = row.cells[0].textContent;
     const ToDo = row.cells[1].textContent;
-    const message = row.cells[2].innerHTML;
+    const message = row.cells[2].textContent;
     const priority = row.cells[3].firstChild.checked;
     const date = row.cells[4].innerHTML;  
     const closed = row.cells[5].innerHTML;
@@ -334,7 +334,7 @@ function updateDatabaseValues(value){
     TodoData.value = rowValues.ToDo;
     const messageData = document.querySelector('#message-input-box')
     messageData.textContent = rowValues.message;
-    const dateOpenedData = document.querySelector("#open-input-box")
+    const dateOpenedData = document.querySelector('#open-input-box')
     dateOpenedData.value = rowValues.date;
 
     const priorityData = document.querySelector('#priority-check')
@@ -346,7 +346,7 @@ function updateDatabase(objStore, data){
         .objectStore(objStore)
         .put(data);
 
-    request.onsuccess = function(event){
+    request.onsuccess = function(_event){
         console.log('successfully written to db');
           switch (objStore){
             case projectsName:
@@ -355,7 +355,7 @@ function updateDatabase(objStore, data){
                 readProjectDetailsDb();
         }    
     }
-    request.onerror = function(event){
+    request.onerror = function(_event){
         alert('Failed to write ' + data + ' to db');
     }
 }
@@ -383,14 +383,14 @@ function toggleInputFields(){
 // Loads initial project list if there is one
 
 window.onload = function(){
-    const loadDoc = new Promise(function(resolve, reject){
+    const loadDoc = new Promise(function(resolve, _reject){
         let request = window.indexedDB.open('ToDoList');
         request.onsuccess = function(event){
             db = event.target.result;
             resolve(db);
         }
     });
-    loadDoc.then((db) => {
+    loadDoc.then(() => {
     readProjectsDb();
     })
 };
@@ -410,13 +410,13 @@ function getDate(){
 // clear fields in the table input form
 function clearTableFields(){
     const idBox = document.querySelector('#id-input-box');
-    idBox.value = "";
+    idBox.value = '';
     const TodoData = document.querySelector('#ToDo-input-box');
-    TodoData.value = "";
+    TodoData.value = '';
     const messageData = document.querySelector('#message-input-box')
-    messageData.textContent = "";
-    const dateOpenedData = document.querySelector("#open-input-box")
-    dateOpenedData.value = "";
+    messageData.value = '';
+    const dateOpenedData = document.querySelector('#open-input-box')
+    dateOpenedData.value = '';
     const priorityData = document.querySelector('#priority-check')
     priorityData.checked = false;
 }

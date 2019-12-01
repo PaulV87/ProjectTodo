@@ -72,8 +72,7 @@ table {
         grid-row: 2;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        background-color: #fff;
-             
+        background-color: #fff;             
     }
 
     .nav-header{
@@ -102,7 +101,6 @@ table {
         grid-row: 3;
         grid-column: 1 / span 2;
     }
-
 }
 
 body{
@@ -151,6 +149,7 @@ body{
     display: grid;
     justify-content: center;
     grid-template-columns:160px 40px;
+    padding-bottom: 30px;
 }
 
 .content-header{
@@ -171,7 +170,9 @@ body{
 }
 
 .table-btn {
-    width:90%;  
+    
+    width: 50px;
+    height: 30px;
 }
 
 .btn:hover{
@@ -185,9 +186,6 @@ body{
     padding: 0 10px;    
     height: 30px;
 }
-
-
-
 
 /* table */
 .data-table {
@@ -226,15 +224,15 @@ body{
     grid-template-columns: 200px 30px;
     font-size: 30px;
     grid-gap: 15px;
-    padding: 5px 20px 5px 20px;
+    padding: 15px 20px 15px 20px;    
 }
-
-
 
 .projects {
     position: relative;
+   
     background-color: #fff;
     text-align: center;
+    border-radius: 3px;
 }
 
 .projects:hover{
@@ -245,10 +243,8 @@ body{
   /* Content CSS */
 .form-content-container{    
     display: none;
-    background-color: green;
-   
+    background-color: green;   
 }
-
 
 .input-form {
     background-color:#fff;
@@ -259,8 +255,7 @@ body{
     flex-direction: column;    
     font-family: AvenirNext,Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif;
     z-index: 1;
-    padding: 0 10px;
-    
+    padding: 0 10px;    
 }
 
 .header-text-form{   
@@ -305,7 +300,8 @@ body{
 
 .large-input-box {
     height: 100px;
-    wrap: hard;
+    word-break: break-all;
+    word-wrap: break-word;
     resize: none;
 }
 
